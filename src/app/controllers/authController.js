@@ -83,15 +83,44 @@ router.post("/forgot_password", async (req, res) => {
         context: { token },
       },
       (err) => {
-        console.log(err);
         return err
           ? res.status(400).send({ error: "Error on send token to user" })
           : res.send();
       }
     );
   } catch (e) {
-    console.log(e);
     res.status(500).send({ error: "Error on forgot password. Try again" });
+  }
+});
+
+router.post("/reset_password", async (req, res) => {
+  const { email, token, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email }).select(
+      "+passwordResetToken passwordResetExpires"
+    );
+
+    if (!user) {
+      return restart.status(400).send({ error: "User not found" });
+    }
+
+    if (token !== user.passwordResetToken) {
+      return res.status(400).send({ error: "Token invalid" });
+    }
+
+    const now = new Date();
+
+    if (now >= user.passwordResetExpires) {
+      return res.status(400).send({ error: "Token expired" });
+    }
+
+    user.password = password;
+    await user.save();
+
+    res.send();
+  } catch (e) {
+    res.status(500).send({ error: "Cannot reset password. Try again" });
   }
 });
 

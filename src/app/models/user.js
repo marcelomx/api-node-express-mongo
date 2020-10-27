@@ -21,11 +21,11 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  passworResetToken: {
+  passwordResetToken: {
     type: String,
     select: false,
   },
-  passworResetExpires: {
+  passwordResetExpires: {
     type: Date,
     select: false,
   },
