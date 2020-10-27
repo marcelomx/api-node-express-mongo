@@ -1,4 +1,4 @@
-const mongoose = require("../database");
+const mongoose = require("../../database");
 const bcrypt = require("bcrypt");
 
 const UserSchema = new mongoose.Schema({
@@ -20,6 +20,14 @@ const UserSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  passworResetToken: {
+    type: String,
+    select: false,
+  },
+  passworResetExpires: {
+    type: Date,
+    select: false,
   },
 });
 
